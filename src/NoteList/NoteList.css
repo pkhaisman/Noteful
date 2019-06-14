@@ -1,0 +1,5 @@
+.NoteList {
+    flex-grow: 2;
+    list-style-type: none;
+    padding: 0;
+}

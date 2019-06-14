@@ -1,0 +1,17 @@
+.Note {
+    height: auto;
+    margin: 10px;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+}
+
+.Note__content {
+    position: absolute;
+    margin: 0 10px;
+}
+
+.Note__date-delete {
+    display: flex;
+    justify-content: space-between;
+}
