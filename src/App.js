@@ -12,7 +12,14 @@ class App extends React.Component {
         super(props);
         this.state = {
             data,
+            selectedFolder: null
         }
+    }
+
+    setSelectedFolder = (folderId) => {
+        this.setState({
+            selectedFolder: folderId
+        })
     }
 
     render() {
@@ -27,7 +34,8 @@ class App extends React.Component {
                         render={(props) => {
                             return <div className='main-content'>
                                 <FolderList 
-                                    folders={folders} />
+                                    folders={folders}
+                                    setSelectedFolder={(folderId) => this.setSelectedFolder(folderId)} />
                                 <NoteList 
                                     notes={notes} />
                             </div>
@@ -39,7 +47,8 @@ class App extends React.Component {
                             return <div className='main-content'>
                                 <FolderList
                                     folders={folders}
-                                    folderId={props.match.params.folderId} />
+                                    folderId={props.match.params.folderId}
+                                    setSelectedFolder={(folderId) => this.setSelectedFolder(folderId)} />
                                 <NoteList 
                                     notes={notes}
                                     folderId={props.match.params.folderId} />

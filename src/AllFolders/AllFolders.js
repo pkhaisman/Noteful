@@ -8,7 +8,10 @@ class AllFolders extends React.Component {
         const folderList = folders.map(folder => {
             return (
                 <li key={folder.id}>
-                    <NavLink to={`/folder/${folder.id}`}>
+                    <NavLink 
+                        to={`/folder/${folder.id}`}
+                        onClick={() => this.props.setSelectedFolder(folder.id)}
+                    >
                         <Folder
                             currentlySelectedFolder={folderId}
                             folder={folder} />

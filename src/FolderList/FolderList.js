@@ -8,9 +8,12 @@ import AllFolders from '../AllFolders/AllFolders';
 class FolderList extends React.Component {
     render() {      
         if (this.props.noteId) {
-            return <FolderOfNote data={this.props}/>
+            return <FolderOfNote 
+                data={this.props} />
         } 
-        return <AllFolders data={this.props}/>
+        return <AllFolders 
+            data={this.props}
+            setSelectedFolder={this.props.setSelectedFolder} />
     }
 }
 
