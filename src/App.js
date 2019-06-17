@@ -10,7 +10,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data,
+            data
         }
     }
 
@@ -23,9 +23,7 @@ class App extends React.Component {
                 </header>
                 <Route
                     exact path='/'
-                    // Where does props come from?
                     render={(props) => {
-                        console.log(props.match);
                         return <div className='main-content'>
                             <FolderList
                                 folders={folders} />
