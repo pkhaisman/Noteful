@@ -12,7 +12,7 @@ class NoteList extends React.Component {
             const notes = filteredNotes.map(note => {
                 return (
                     <li key={note.id}>
-                        <Link to={`note/${note.id}`}>
+                        <Link to={`/note/${note.id}`}>
                             <Note note={note} />
                         </Link>
                     </li>
