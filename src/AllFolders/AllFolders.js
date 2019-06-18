@@ -1,20 +1,22 @@
 import React from 'react';
 import Folder from '../Folder/Folder';
 import {NavLink} from 'react-router-dom';
+import NotefulContext from '../NotefulContext';
 
 class AllFolders extends React.Component {
+    static contextType = NotefulContext;
     render() {
-        const {folders, folderId} = this.props.data  
-        const folderList = folders.map(folder => {
+        const folderList = this.context.data.folders.map(folder => {
             return (
                 <li key={folder.id}>
                     <NavLink 
                         to={`/folder/${folder.id}`}
-                        onClick={() => this.props.setSelectedFolder(folder.id)}
+                        onClick={() => this.context.setSelectedFolder(folder.id)}
                     >
                         <Folder
-                            currentlySelectedFolder={folderId}
-                            folder={folder} />
+                            id={folder.id}
+                            name={folder.name}
+                        />
                     </NavLink>
                 </li>
             )

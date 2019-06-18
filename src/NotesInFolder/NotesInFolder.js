@@ -1,16 +1,15 @@
 import React from 'react';
 import Note from '../Note/Note';
-import {Link} from 'react-router-dom';
+import NotefulContext from '../NotefulContext';
 
 class NotesInFolder extends React.Component {
+    static contextType = NotefulContext;
     render() {
-        const filteredNotes = this.props.notes.filter(note => note.folderId === this.props.folderId);
+        const filteredNotes = this.context.data.notes.filter(note => note.folderId === this.context.selectedFolder);
         const notes = filteredNotes.map(note => {
             return (
                 <li key={note.id}>
-                    <Link to={`/note/${note.id}`}>
                         <Note note={note} />
-                    </Link>
                 </li>
             )
         });

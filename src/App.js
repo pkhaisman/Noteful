@@ -3,16 +3,17 @@ import { Route } from 'react-router-dom';
 import Header from './Header/Header';
 import FolderList from './FolderList/FolderList';
 import NoteList from './NoteList/NoteList';
-import NotefulContext from './NotefulContext'
-import data from './data';
+import NotefulContext from './NotefulContext';
 import './App.css';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data,
-            selectedFolder: null
+            selectedFolder: null,
+            selectedNote: null,
+            folders: [],
+            notes: []
         }
     }
 
@@ -22,22 +23,84 @@ class App extends React.Component {
         })
     }
 
+    setSelectedNote = (noteId) => {
+        this.setState({
+            selectedNote: noteId
+        })
+    }
+
+    handleDelete = (noteId) => {
+        fetch(`http://localhost:9090/notes/${noteId}`, {
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('delete route');
+                this.setState({
+                    notes: this.state.notes.filter(note => note.id !== noteId),
+                    selectedNote: null
+                })
+            })
+    }
+
+    componentWillMount() {
+        fetch('http://localhost:9090/folders', {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    folders: data
+                })
+            })
+
+        fetch('http://localhost:9090/notes', {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    notes: data
+                })
+            })
+    }
+
     render() {
-        const {folders, notes} = this.state.data;
+        if (this.state.folders.length === 0 || this.state.notes.length === 0) {
+            return false
+        }
+        const contextValue = {
+            data: {
+                folders: this.state.folders,
+                notes: this.state.notes
+            },
+            selectedFolder: this.state.selectedFolder,
+            setSelectedFolder: this.setSelectedFolder,
+            selectedNote: this.state.selectedNote,
+            setSelectedNote: this.setSelectedNote,
+            handleDelete: this.handleDelete
+        }
         return (
             <main className='App'>
                 <header className='header'>
                     <Header />
                 </header>
+                <NotefulContext.Provider value={contextValue}>
                     <Route
                         exact path='/'
                         render={(props) => {
                             return <div className='main-content'>
-                                <FolderList 
-                                    folders={folders}
-                                    setSelectedFolder={(folderId) => this.setSelectedFolder(folderId)} />
-                                <NoteList 
-                                    notes={notes} />
+                                <FolderList />
+                                <NoteList />
                             </div>
                         }}
                     />
@@ -45,13 +108,8 @@ class App extends React.Component {
                         path='/folder/:folderId/'
                         render={(props) => {
                             return <div className='main-content'>
-                                <FolderList
-                                    folders={folders}
-                                    folderId={props.match.params.folderId}
-                                    setSelectedFolder={(folderId) => this.setSelectedFolder(folderId)} />
-                                <NoteList 
-                                    notes={notes}
-                                    folderId={props.match.params.folderId} />
+                                <FolderList />
+                                <NoteList />
                             </div>
                         }}
                     />
@@ -59,16 +117,12 @@ class App extends React.Component {
                         path='/note/:noteId/'
                         render={(props) => {
                             return <div className='main-content'>
-                                <FolderList
-                                    folders={folders}
-                                    notes={notes}
-                                    noteId={props.match.params.noteId} />
-                                <NoteList 
-                                    notes={notes}
-                                    noteId={props.match.params.noteId} />
+                                <FolderList />
+                                <NoteList />
                             </div>
                         }}
                     />
+                </NotefulContext.Provider>
             </main>
         )
     }

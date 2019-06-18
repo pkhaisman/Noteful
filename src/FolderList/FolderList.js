@@ -1,19 +1,16 @@
 import React from 'react';
-// import { NavLink, Link } from 'react-router-dom';
 import './FolderList.css';
-// import Folder from '../Folder/Folder';
 import FolderOfNote from '../FolderOfNote/FolderOfNote';
 import AllFolders from '../AllFolders/AllFolders';
+import NotefulContext from '../NotefulContext';
 
 class FolderList extends React.Component {
+    static contextType = NotefulContext;
     render() {      
-        if (this.props.noteId) {
-            return <FolderOfNote 
-                data={this.props} />
+        if (this.context.selectedNote) {
+            return <FolderOfNote />
         } 
-        return <AllFolders 
-            data={this.props}
-            setSelectedFolder={this.props.setSelectedFolder} />
+        return <AllFolders />
     }
 }
 
