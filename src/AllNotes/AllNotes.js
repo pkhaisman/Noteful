@@ -23,9 +23,14 @@ class AllNotes extends React.Component {
             )
         });
         return (
-            <ul className='NoteList'>
-                {notes}
-            </ul>
+            <div className='NoteList'>
+                <ul className='List'>
+                    {notes}
+                </ul>
+                <Link to={'/newNote'}>
+                    <button>Add Note</button>
+                </Link>
+            </div>
         );
     }
 }

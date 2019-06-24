@@ -1,12 +1,15 @@
 import React from 'react';
 import Folder from '../Folder/Folder';
-import {NavLink} from 'react-router-dom';
+import {NavLink, Link} from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
 
 class AllFolders extends React.Component {
     static contextType = NotefulContext;
+
+    
+
     render() {
-        const folderList = this.context.data.folders.map(folder => {
+        const allFolders = this.context.data.folders.map(folder => {
             return (
                 <li key={folder.id}>
                     <NavLink 
@@ -22,9 +25,16 @@ class AllFolders extends React.Component {
             )
         });
         return (
-            <ul className='FolderList'>
-                {folderList}
-            </ul>
+            <div className='FolderList'>
+                <ul className='List'>
+                    {allFolders}
+                </ul>
+                <Link
+                    to={'/newFolder'}
+                >
+                    <button>Add Folder</button>
+                </Link>
+            </div>
         );
     }
 }

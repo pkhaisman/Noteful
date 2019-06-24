@@ -1,6 +1,7 @@
 import React from 'react';
 import Note from '../Note/Note';
 import NotefulContext from '../NotefulContext';
+import {Link} from 'react-router-dom';
 
 class NotesInFolder extends React.Component {
     static contextType = NotefulContext;
@@ -9,14 +10,19 @@ class NotesInFolder extends React.Component {
         const notes = filteredNotes.map(note => {
             return (
                 <li key={note.id}>
-                        <Note note={note} />
+                    <Note note={note} />
                 </li>
             )
         });
         return (
-            <ul className='NoteList'>
-                {notes}
-            </ul>
+            <div className='NoteList'>
+                <ul className='List'>
+                    {notes}
+                </ul>
+                <Link to={'/newNote'}>
+                    <button>Add Note</button>
+                </Link>
+            </div>
         );
     }
 }

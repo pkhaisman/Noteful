@@ -3,7 +3,10 @@ import { Route } from 'react-router-dom';
 import Header from './Header/Header';
 import FolderList from './FolderList/FolderList';
 import NoteList from './NoteList/NoteList';
+import AddFolder from './AddFolder/AddFolder';
+import AddNote from './AddNote/AddNote'
 import NotefulContext from './NotefulContext';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import './App.css';
 
 class App extends React.Component {
@@ -37,7 +40,7 @@ class App extends React.Component {
             }
         })
             .then(response => response.json())
-            .then(data => {
+            .then(() => {
                 console.log('delete route');
                 this.setState({
                     notes: this.state.notes.filter(note => note.id !== noteId),
@@ -46,7 +49,36 @@ class App extends React.Component {
             })
     }
 
-    componentWillMount() {
+    handleAddFolder = (folderName, folderId) => {
+        const newFolder = {
+            name: folderName,
+            id: folderId
+        }
+        this.setState({
+            folders: [
+                ...this.state.folders,
+                newFolder
+            ]
+        });
+    }
+
+    handleAddNote = (noteName, noteFolder, noteContent, noteId) => {
+        const newNote = {
+            name: noteName,
+            folderId: noteFolder,
+            content: noteContent,
+            id: noteId
+        }
+        this.setState({
+            notes: [
+                ...this.state.notes,
+                newNote
+            ]
+        });
+    }
+
+    componentDidMount() {
+        // fetch folders
         fetch('http://localhost:9090/folders', {
             method: 'GET',
             headers: {
@@ -59,7 +91,7 @@ class App extends React.Component {
                     folders: data
                 })
             })
-
+        // fetch notes
         fetch('http://localhost:9090/notes', {
             method: 'GET',
             headers: {
@@ -75,8 +107,9 @@ class App extends React.Component {
     }
 
     render() {
+        // wait until state is populated before running code
         if (this.state.folders.length === 0 || this.state.notes.length === 0) {
-            return false
+            return null
         }
         const contextValue = {
             data: {
@@ -87,7 +120,9 @@ class App extends React.Component {
             setSelectedFolder: this.setSelectedFolder,
             selectedNote: this.state.selectedNote,
             setSelectedNote: this.setSelectedNote,
-            handleDelete: this.handleDelete
+            handleDelete: this.handleDelete,
+            handleAddFolder: this.handleAddFolder,
+            handleAddNote: this.handleAddNote
         }
         return (
             <main className='App'>
@@ -95,31 +130,56 @@ class App extends React.Component {
                     <Header />
                 </header>
                 <NotefulContext.Provider value={contextValue}>
+                    {/* home route */}
                     <Route
                         exact path='/'
                         render={(props) => {
                             return <div className='main-content'>
-                                <FolderList />
-                                <NoteList />
+                                <ErrorBoundary>
+                                    <FolderList />
+                                </ErrorBoundary>
+                                <ErrorBoundary>
+                                    <NoteList />
+                                </ErrorBoundary>
                             </div>
                         }}
                     />
+                    {/* folder route */}
                     <Route
                         path='/folder/:folderId/'
                         render={(props) => {
                             return <div className='main-content'>
-                                <FolderList />
-                                <NoteList />
+                                <ErrorBoundary>
+                                    <FolderList match={props.match} />
+                                </ErrorBoundary>
+                                <ErrorBoundary>
+                                    <NoteList />
+                                </ErrorBoundary>
                             </div>
                         }}
                     />
+                    {/* note route */}
                     <Route
                         path='/note/:noteId/'
                         render={(props) => {
                             return <div className='main-content'>
-                                <FolderList />
-                                <NoteList />
+                                <ErrorBoundary>
+                                    <FolderList match={props.match} />
+                                </ErrorBoundary>
+                                <ErrorBoundary>
+                                    <NoteList />
+                                </ErrorBoundary>
                             </div>
+                        }}
+                    />
+                    <Route
+                        path='/newFolder/'
+                        component={AddFolder}
+                    />
+                    <Route
+                        path='/newNote/'
+                        render={() => {
+                            return <AddNote selectedFolder={this.state.selectedFolder ? this.state.selectedFolder : 'no-folder-selected'} />
                         }}
                     />
                 </NotefulContext.Provider>

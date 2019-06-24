@@ -2,6 +2,10 @@
     flex-grow: 1;
     border-right: 1px solid black;
     height: 100vh;
+    padding: 0;
+}
+
+.List {
     list-style-type: none;
     padding: 0;
 }

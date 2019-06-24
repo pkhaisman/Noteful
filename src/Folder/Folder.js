@@ -6,6 +6,7 @@ class Folder extends React.Component {
     static contextType = NotefulContext;
     render() {
         let className = 'Folder';
+        // build className for selected style
         if (this.context.selectedFolder === this.props.id) {
             className += ' selected';
         }
