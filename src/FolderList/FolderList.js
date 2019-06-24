@@ -3,6 +3,7 @@ import './FolderList.css';
 import FolderOfNote from '../FolderOfNote/FolderOfNote';
 import AllFolders from '../AllFolders/AllFolders';
 import NotefulContext from '../NotefulContext';
+import PropTypes from 'prop-types';
 
 class FolderList extends React.Component {
     static contextType = NotefulContext;
@@ -28,6 +29,10 @@ class FolderList extends React.Component {
         } 
         return <AllFolders />
     }
+}
+
+FolderList.propTypes = {
+    match: PropTypes.object
 }
 
 export default FolderList;

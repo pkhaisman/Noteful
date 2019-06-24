@@ -1,6 +1,7 @@
 import React from 'react';
 import './Folder.css';
 import NotefulContext from '../NotefulContext';
+import PropTypes from 'prop-types';
 
 class Folder extends React.Component {
     static contextType = NotefulContext;
@@ -16,6 +17,11 @@ class Folder extends React.Component {
             </div>
         )
     }
+}
+
+Folder.propTypes = {
+    id: PropTypes.string,
+    name: PropTypes.string
 }
 
 export default Folder;

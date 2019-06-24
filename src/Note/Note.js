@@ -2,6 +2,7 @@ import React from 'react';
 import './Note.css';
 import NotefulContext from '../NotefulContext';
 import {Link} from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 class Note extends React.Component {
     static contextType = NotefulContext;
@@ -42,6 +43,10 @@ class Note extends React.Component {
         );
         return this.context.selectedNote ? this.renderNotePage(noteBox) : this.renderNoteThumbnail(noteBox)
     }
+}
+
+Note.propTypes = {
+    note: PropTypes.object
 }
 
 export default Note;

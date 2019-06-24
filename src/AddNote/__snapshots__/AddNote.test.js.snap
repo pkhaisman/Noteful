@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AddFolder Component renders the UI as expected 1`] = `
+exports[`AddNote Component renders the UI as expected 1`] = `
 <ContextConsumer>
   <Component />
 </ContextConsumer>

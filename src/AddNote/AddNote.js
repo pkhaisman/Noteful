@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
 import ValidationError from '../ValidationError';
+import PropTypes from 'prop-types';
 
 class AddNote extends Component {
     static contextType = NotefulContext;
@@ -10,6 +11,7 @@ class AddNote extends Component {
         this.state = {
             noteName: '',
             noteFolder: this.props.selectedFolder,
+            // noteFolder: this.context.selectedFolder,
             noteContent: '',
             nameValid: false,
             folderValid: true,
@@ -161,6 +163,10 @@ class AddNote extends Component {
             </div>
         );
     }
+}
+
+AddNote.propTypes = {
+    selectedFolder: PropTypes.string
 }
 
 export default withRouter(AddNote);

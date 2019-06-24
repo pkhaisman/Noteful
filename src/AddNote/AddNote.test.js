@@ -1,31 +1,17 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import AddNote from './AddNote';
-// import renderer from 'react-test-renderer';
-// import {MemoryRouter} from 'react-router-dom';
+import React from 'react';
+import AddNote from './AddNote';
+import {shallow} from 'enzyme';
+import toJson from 'enzyme-to-json';
 
-// describe('AddNote Component', () => {
-//     it('renders without crashing', () => {
-//         // create a DOM element to render the component into
-//         const div = document.createElement('div');
-//         //render the component, this is the actual test, if something is wrong it will fail here
-//         ReactDOM.render(
-//             <MemoryRouter>
-//                 <AddNote />
-//             </MemoryRouter>
-//         , div);
-//       //clean up code
-//       ReactDOM.unmountComponentAtNode(div);
-//     });
+describe('AddNote Component', () => {
+
+    // does this qualify as a snapshot test?
+    it('renders without crashing', () => {
+        shallow(<AddNote />)
+    });
     
-//     it('renders the UI as expected', () => {
-//         const tree = renderer
-//             .create(
-//                 <MemoryRouter>
-//                     <AddNote />
-//                 </MemoryRouter>
-//             )
-//             .toJSON();
-//         expect(tree).toMatchSnapshot();  
-//     });
-// });
+    it('renders the UI as expected', () => {
+        const wrapper = shallow(<AddNote />)
+        expect(toJson(wrapper)).toMatchSnapshot();
+    });
+});

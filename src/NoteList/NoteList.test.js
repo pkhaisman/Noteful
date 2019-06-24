@@ -1,22 +1,17 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import NoteList from './NoteList';
-// import renderer from 'react-test-renderer';
+import React from 'react';
+import NoteList from './NoteList';
+import {shallow} from 'enzyme';
+import toJson from 'enzyme-to-json';
 
-// describe('NoteList Component', () => {
-//     it('renders without crashing', () => {
-//       // create a DOM element to render the component into
-//       const div = document.createElement('div');
-//       //render the component, this is the actual test, if something is wrong it will fail here
-//       ReactDOM.render(<NoteList />, div);
-//       //clean up code
-//       ReactDOM.unmountComponentAtNode(div);
-//     });
+describe('NoteList Component', () => {
+
+    // does this qualify as a snapshot test?
+    it('renders without crashing', () => {
+        shallow(<NoteList />)
+    });
     
-//     it('renders the UI as expected', () => {
-//         const tree = renderer
-//             .create(<NoteList />)
-//             .toJSON();
-//         expect(tree).toMatchSnapshot();  
-//     });
-// });
+    it('renders the UI as expected', () => {
+        const wrapper = shallow(<NoteList />)
+        expect(toJson(wrapper)).toMatchSnapshot();
+    });
+});
