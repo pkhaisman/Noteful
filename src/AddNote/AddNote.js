@@ -3,6 +3,7 @@ import {Link, withRouter} from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
 import ValidationError from '../ValidationError';
 import PropTypes from 'prop-types';
+import './AddNote.css';
 
 class AddNote extends Component {
     static contextType = NotefulContext;
@@ -11,14 +12,14 @@ class AddNote extends Component {
         this.state = {
             noteName: '',
             noteFolder: this.props.selectedFolder,
-            // noteFolder: this.context.selectedFolder,
             noteContent: '',
+            modified: '',
             nameValid: false,
             folderValid: true,
             contentValid: false,
             validationMessages: {
-                required: 'Input is required',
-                folder: 'Select a folder'
+                required: '',
+                folder: ''
             },
             formValid: false
         }
@@ -36,13 +37,21 @@ class AddNote extends Component {
         this.setState({noteContent}, () => this.validateContent(noteContent));
     }
 
+    setModified = (datePromise) => {
+        let dateObj = new Date();
+        let formattedDate = dateObj.toDateString()
+        this.setState({modified: formattedDate}, () => {
+            datePromise();
+        });
+    }
+
     validateName = (fieldValue) => {
         let errorMessages = {...this.state.validationMessages};
         let hasError = false;
 
         fieldValue = fieldValue.trim();
         if (fieldValue.length === 0) {
-            errorMessages.required = 'Input is required';
+            errorMessages.required = '*Input is required';
             hasError = true;
         }
         this.setState({
@@ -56,7 +65,7 @@ class AddNote extends Component {
         let hasError = false;
 
         if (fieldValue === 'no-folder-selected') {
-            errorMessages.folder = 'Select a folder';
+            errorMessages.folder = '*Select a folder';
             hasError = true;
         }
         this.setState({
@@ -89,39 +98,48 @@ class AddNote extends Component {
 
     handleSubmit = (e) => {
         e.preventDefault();
-        const {noteName, noteFolder, noteContent, formValid} = this.state;
 
-        fetch('http://localhost:9090/notes', {
-            method: 'POST',
-            body: JSON.stringify({
-                name: noteName,
-                folderId: noteFolder,
-                content: noteContent,
-            }),
-            headers: {
-                'content-type': 'application/json'
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('An error ocurred in your post request');
+        var datePromise = new Promise((resolve, reject) => { 
+            this.setModified(resolve)
+        });
+
+        datePromise.then(() => {
+            const {noteName, noteFolder, noteContent, formValid, modified} = this.state;
+    
+            fetch('http://localhost:9090/notes', {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: noteName,
+                    folderId: noteFolder,
+                    content: noteContent,
+                    modified: modified
+                }),
+                headers: {
+                    'content-type': 'application/json'
                 }
-                return response.json()
             })
-            .then(data => {
-                this.setState({
-                    noteName: '',
-                    noteFolder: '',
-                    noteContent: ''
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('An error ocurred in your post request');
+                    }
+                    return response.json()
+                })
+                .then(data => {
+                    this.setState({
+                        noteName: '',
+                        noteFolder: '',
+                        noteContent: '',
+                        modified: ''
+                    });
+                    if (formValid) {
+                        this.context.handleAddNote(noteName, noteFolder, noteContent, data.id, modified);
+                        this.props.history.push('/');
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
                 });
-                if (formValid) {
-                    this.context.handleAddNote(noteName, noteFolder, noteContent, data.id);
-                    this.props.history.push('/');
-                }
-            })
-            .catch(error => {
-                console.log(error)
-            });
+        })
     }
 
     render() {
@@ -130,15 +148,17 @@ class AddNote extends Component {
         });
         return (
             <div className='AddNote'>
-                <form onSubmit={e => this.handleSubmit(e)}>
-                    <h2>Add a Note</h2>
-                    <div className='input-field'>
-                        <label htmlFor='note-name'>Note Name</label>
+                <form className='AddNote__form' onSubmit={e => {
+                    this.handleSubmit(e);
+                }}>
+                    <h2 className='AddNote__title'>Add a Note</h2>
+                    <div className='AddNote__input-field'>
+                        <label className='AddNote--margin' htmlFor='note-name'>Note Name</label>
                         <input type='text' className='new-note-input'
                             name='note-name' id='note-name'
                             onChange={e => this.updateNoteName(e.target.value)} />
                         <ValidationError hasError={!this.state.nameValid} message={this.state.validationMessages.required} />
-                        <label>
+                        <label className='AddNote__note-folder AddNote--margin'>
                             Note Folder
                             <select value={this.state.noteFolder} onChange={e => this.updateNoteFolder(e.target.value)}>
                                 <option value='no-folder-selected'>Select a folder</option>
@@ -147,17 +167,17 @@ class AddNote extends Component {
                             <ValidationError hasError={!this.state.folderValid} message={this.state.validationMessages.folder} />
                         </label>
 
-                        <label htmlFor='note-content'> Note Content</label>
+                        <label htmlFor='note-content' className='AddNote--margin'> Note Content</label>
                         <input type='text' className='new-note-input'
                             name='note-content' id='note-content'
                             onChange={e => this.updateNoteContent(e.target.value)} />
                         <ValidationError hasError={!this.state.contentValid} message={this.state.validationMessages.required} />
                     </div>
-                    <div className='buttons'>
+                    <div className='AddNote__buttons'>
                         <Link to={'/'}>
-                            <button>Cancel</button>
+                            <button className='AddNote__cancel'>Cancel</button>
                         </Link>
-                        <button disabled={!this.state.formValid}>Submit</button>
+                        <button className='AddNote__submit' disabled={!this.state.formValid}>Submit</button>
                     </div>
                 </form>
             </div>

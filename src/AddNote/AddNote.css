@@ -1,0 +1,79 @@
+.AddNote {
+    display: flex;
+    justify-content: center;
+}
+
+.AddNote__form {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+}
+
+.AddNote__input-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.AddNote__note-folder {
+    display: flex;
+    flex-direction: column;
+}
+
+.AddNote__title {
+    text-align: center;
+}
+
+.AddNote--margin {
+    margin-top: 10px;
+}
+
+.AddNote__cancel {
+    border-radius: 5px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.AddNote__cancel:hover {
+    background-color: #db3b2f;
+    cursor: pointer;
+}
+
+.AddNote__cancel--color {
+    color: white;
+}
+
+.AddNote__submit {
+    border-radius: 5px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.AddNote__submit:hover {
+    cursor: pointer;
+    background-color: rgb(63, 148, 66);
+}
+
+button:disabled {
+    border-radius: 5px;
+    background-color: grey;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+button:disabled:hover {
+    background-color: grey
+}
+
+.AddNote__buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
