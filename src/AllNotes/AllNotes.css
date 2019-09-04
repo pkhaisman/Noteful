@@ -1,0 +1,17 @@
+.AllNotes__add-note {
+    display: flex;
+    justify-content: center;
+}
+.AllNotes__add-note-btn {
+    border-radius: 5px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.AllNotes__add-note-btn:hover {
+    cursor: pointer;
+    background-color: rgb(63, 148, 66);
+}

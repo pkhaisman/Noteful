@@ -3,6 +3,7 @@ import React from 'react';
 import Note from '../Note/Note';
 import {Link} from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
+import './AllNotes.css';
 
 class AllNotes extends React.Component {
     static contextType = NotefulContext;
@@ -10,15 +11,15 @@ class AllNotes extends React.Component {
         const notes = this.context.data.notes.map(note => {
             return (
                 <li key={note.id}>
-                    <Link 
+                    {/* <Link 
                         onClick={() => {
                             this.context.setSelectedFolder(note.folderId)
                             this.context.setSelectedNote(note.id)
                         }}
                         to={`/note/${note.id}`}
-                    >
+                    > */}
                         <Note note={note} />
-                    </Link>
+                    {/* </Link> */}
                 </li>
             )
         });
@@ -27,8 +28,8 @@ class AllNotes extends React.Component {
                 <ul className='List'>
                     {notes}
                 </ul>
-                <Link to={'/newNote'}>
-                    <button>Add Note</button>
+                <Link to={'/newNote'} className='AllNotes__add-note'>
+                    <button className='AllNotes__add-note-btn'>Add Note</button>
                 </Link>
             </div>
         );

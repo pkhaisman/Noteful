@@ -1,3 +1,7 @@
+html, body {
+    height: auto
+}
+
 .header {
     height: 100px;
     border-bottom: 1px solid black;

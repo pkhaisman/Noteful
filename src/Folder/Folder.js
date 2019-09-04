@@ -2,6 +2,8 @@ import React from 'react';
 import './Folder.css';
 import NotefulContext from '../NotefulContext';
 import PropTypes from 'prop-types';
+import DeleteButton from '../DeleteButton/DeleteButton';
+import EditFolderButton from '../EditFolderButton/EditFolderButton';
 
 class Folder extends React.Component {
     static contextType = NotefulContext;
@@ -14,13 +16,17 @@ class Folder extends React.Component {
         return (
             <div className={className}>
                 <p>{this.props.name}</p>
+                <div className='folder-buttons'>
+                    <DeleteButton id={this.props.id} className={className} />
+                    <EditFolderButton id={this.props.id} name={this.props.name} />
+                </div>
             </div>
         )
     }
 }
 
 Folder.propTypes = {
-    id: PropTypes.string,
+    id: PropTypes.number,
     name: PropTypes.string
 }
 

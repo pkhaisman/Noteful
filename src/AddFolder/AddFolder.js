@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Link, withRouter} from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
 import ValidationError from '../ValidationError'
+import './AddFolder.css';
 
 class AddFolder extends Component {
     static contextType = NotefulContext;
@@ -25,7 +26,7 @@ class AddFolder extends Component {
 
         fieldValue = fieldValue.trim();
         if (fieldValue.length === 0) {
-            errorMessage = 'Input is required';
+            errorMessage = '*Input is required';
             hasError = true;
         }
         this.setState({
@@ -38,10 +39,10 @@ class AddFolder extends Component {
         e.preventDefault();
         const folderName = this.state.newFolder;
         // make a POST request
-        fetch('http://localhost:9090/folders', {
+        fetch('http://localhost:8000/api/folders', {
             method: 'POST',
             body: JSON.stringify({
-                name: folderName
+                folder_name: folderName
 
             }),
             headers: {
@@ -71,24 +72,22 @@ class AddFolder extends Component {
     render() {
         return (
             <div className='AddFolder'>
-                <form onSubmit={e => this.handleSubmit(e)}>
+                <form className='AddFolder__form' onSubmit={e => this.handleSubmit(e)}>
                     <h2>Add a Folder</h2>
                     <div className='input-field'>
                         <label htmlFor='new-folder'></label>
-                        <input type='text' className='new-folder-input'
+                        <input type='text' className='AddFolder__new-folder-input'
                             name='new-folder' id='new-folder' 
                             onChange={(e) => this.updateNewFolder(e.target.value)} />
                     </div>
-                    <div className='buttons'>
-                        <Link
-                            to='/'
-                        >
-                            <button>Cancel</button>
-                        </Link>
-                        <button disabled={!this.state.formValid}>Submit</button>
+                    <ValidationError hasError={!this.state.formValid} message={this.state.validationMessage} />
+                    <div className='AddFolder__buttons'>
+                        <button className='AddFolder__cancel'>
+                            <Link to='/' className='AddFolder__cancel--color'>Cancel</Link>
+                        </button>
+                        <button className='AddFolder__submit' disabled={!this.state.formValid}>Submit</button>
                     </div>
                 </form>
-                <ValidationError hasError={!this.state.formValid} message={this.state.validationMessage} />
             </div>
         )
     }

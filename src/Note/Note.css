@@ -1,6 +1,7 @@
-.Note {
+.Note-component {
     height: auto;
     margin: 10px;
+    padding: 10px;
     border: 1px solid black;
     display: flex;
     flex-direction: column;
@@ -14,4 +15,31 @@
 .Note__date-delete {
     display: flex;
     justify-content: space-between;
+}
+
+.Note__date {
+    margin: 0;
+}
+
+/* .Note__delete {
+    border-radius: 5px;
+    background-color: #f44336;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+} */
+
+.Note__delete:hover {
+    background-color: #db3b2f;
+    cursor: pointer;
+}
+
+.Note__title {
+    margin-top: 0;
+}
+
+.Note__buttons {
+    display: flex;
+    align-items: baseline;
 }

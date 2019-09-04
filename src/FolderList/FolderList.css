@@ -1,7 +1,7 @@
 .FolderList {
-    flex-grow: 1;
+    width: 38%;
     border-right: 1px solid black;
-    height: 100vh;
+    height: 100vmax;
     padding: 0;
 }
 

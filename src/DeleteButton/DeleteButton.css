@@ -1,0 +1,14 @@
+.DeleteButton {
+    border-radius: 5px;
+    background-color: #f44336;
+    border: none;
+    color: white;
+    height: 25px;
+    /* margin: 0 5px 0 0; */
+    font-weight: bold;
+}
+
+.DeleteButton:hover {
+    cursor: pointer;
+    background-color: #cf392e
+}

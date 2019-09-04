@@ -1,60 +1,69 @@
-import React, {Component} from 'react';
-import {Link, withRouter} from 'react-router-dom';
+import React, { Component } from 'react';
 import NotefulContext from '../NotefulContext';
+import { Link } from 'react-router-dom'
 import ValidationError from '../ValidationError';
-import './AddNote.css';
+import './EditNote.css';
 
-class AddNote extends Component {
-    static contextType = NotefulContext;
+class EditNote extends Component {
+    static contextType = NotefulContext
     constructor(props) {
         super(props);
         this.state = {
+            noteId: '',
             noteName: '',
-            noteFolder: '',
             noteContent: '',
+            noteFolderId : '',
             modified: '',
-            nameValid: false,
+            nameValid: true,
             folderValid: true,
-            contentValid: false,
+            contentValid: true,
             validationMessages: {
                 required: '',
-                folder: ''
+                folder: '',
             },
-            formValid: false
+            formValid: true,
         }
     }
 
     componentDidMount() {
-        if (this.context.selectedFolder) {
+        if (this.props.match && this.props.match.params.noteId) {
+            const note = this.context.data.notes.find(note => parseInt(note.id) === parseInt(this.props.match.params.noteId))
             this.setState({
-                noteFolder: this.context.selectedFolder
+                noteId: note.id,
+                noteName: note.name,
+                noteContent: note.content,
+                noteFolderId : note.folderId,
             })
+            this.context.setSelectedFolder(parseInt(note.folderId));
+            this.context.setSelectedNote(parseInt(this.props.match.params.noteId))
         }
     }
 
     updateNoteName = (noteName) => {
-        this.setState({noteName}, () => this.validateName(noteName));
+        this.setState({ noteName }, () => this.validateName(noteName));
     }
 
-    updateNoteFolder = (noteFolder) => {
-        this.setState({noteFolder}, () => this.validateFolder(noteFolder));
+    updateNoteFolder = (noteFolderId) => {
+        this.setState({ noteFolderId }, () => this.validateFolder(noteFolderId));
     }
 
     updateNoteContent = (noteContent) => {
-        this.setState({noteContent}, () => this.validateContent(noteContent));
+        this.setState({noteContent}, () => this.validateContent(noteContent))
     }
 
     setModified = (datePromise) => {
         let dateObj = new Date();
-        let formattedDate = dateObj.toDateString()
-        this.setState({modified: formattedDate}, () => {
-            datePromise();
+        let formatteDate = dateObj.toDateString();
+        this.setState({
+            modified: formatteDate
+        }, () => {
+            datePromise()
         });
     }
 
     validateName = (fieldValue) => {
-        let errorMessages = {...this.state.validationMessages};
-        let hasError = false;
+        let errorMessages = {...this.state.validationMessages}
+        let hasError = false
 
         fieldValue = fieldValue.trim();
         if (fieldValue.length === 0) {
@@ -101,24 +110,25 @@ class AddNote extends Component {
         this.setState({
             formValid: nameValid && folderValid && contentValid
         });
-    }    
+    }  
 
     handleSubmit = (e) => {
         e.preventDefault();
 
-        var datePromise = new Promise((resolve, reject) => { 
+        let datePromise = new Promise((resolve, reject) => {
             this.setModified(resolve)
         });
 
         datePromise.then(() => {
-            const {noteName, noteFolder, noteContent, formValid, modified} = this.state;
+            const { noteId, noteName, noteContent, noteFolderId, modified, formValid } = this.state;
             
-            fetch(`http://localhost:8000/api/notes/${noteFolder}/notes`, {
-                method: 'POST',
+            fetch(`http://localhost:8000/api/notes/${noteFolderId}/notes/${noteId}`, {
+                method: `PATCH`,
                 body: JSON.stringify({
                     note_name: noteName,
-                    folder_id: noteFolder,
+                    folder_id: noteFolderId,
                     note_content: noteContent,
+                    date_modified: modified
                 }),
                 headers: {
                     'content-type': 'application/json'
@@ -126,26 +136,27 @@ class AddNote extends Component {
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('An error ocurred in your post request');
+                        throw new Error('An error ocurred in your patch request');
                     }
-                    return response.json()
+                    return response
                 })
                 .then(data => {
                     this.setState({
+                        noteId: '',
                         noteName: '',
-                        noteFolder: '',
                         noteContent: '',
-                        // modified: ''
+                        noteFolderId : '',
                     });
                     if (formValid) {
-                        this.context.handleAddNote(noteName, noteFolder, noteContent, data.id, modified);
-                        this.props.history.push(`/folder/${noteFolder}`);
+                        this.context.handleEditNote(noteName, noteFolderId, noteContent, noteId, modified)
+                        this.props.history.push(`/note/${this.props.selectedNote.id}`);
                     }
                 })
                 .catch(error => {
                     console.log(error)
-                });
+                })
         })
+
     }
 
     render() {
@@ -157,38 +168,40 @@ class AddNote extends Component {
                 <form className='AddNote__form' onSubmit={e => {
                     this.handleSubmit(e);
                 }}>
-                    <h2 className='AddNote__title'>Add a Note</h2>
+                    <h2 className='AddNote__title'>Edit Note</h2>
                     <div className='AddNote__input-field'>
+
                         <label className='AddNote--margin' htmlFor='note-name'>Note Name</label>
                         <input type='text' className='new-note-input'
-                            name='note-name' id='note-name'
+                            name='note-name' id='note-name' value={this.state.noteName}
                             onChange={e => this.updateNoteName(e.target.value)} />
                         <ValidationError hasError={!this.state.nameValid} message={this.state.validationMessages.required} />
+
                         <label className='AddNote__note-folder AddNote--margin'>
                             Note Folder
-                            <select value={this.state.noteFolder} onChange={e => this.updateNoteFolder(e.target.value)}>
-                                <option value='no-folder-selected'>Select a folder</option>
+                            <select value={this.state.noteFolderId} onChange={e => this.updateNoteFolder(e.target.value)}>
+                                <option>Select a folder</option>
                                 {folders}
                             </select>
                             <ValidationError hasError={!this.state.folderValid} message={this.state.validationMessages.folder} />
-                        </label>
+                        </label> 
 
-                        <label htmlFor='note-content' className='AddNote--margin'> Note Content</label>
-                        <input type='text' className='new-note-input'
-                            name='note-content' id='note-content'
+                        <label htmlFor='note-content' className='AddNote--margin'>Note Content</label>
+                        <input type='text' className='edit-note-input'
+                            name='note-content' id='note-content' value={this.state.noteContent}
                             onChange={e => this.updateNoteContent(e.target.value)} />
                         <ValidationError hasError={!this.state.contentValid} message={this.state.validationMessages.required} />
                     </div>
                     <div className='AddNote__buttons'>
-                        <Link to={'/'}>
+                        <Link to={`/note/${this.props.selectedNote.id}`}>
                             <button className='AddNote__cancel'>Cancel</button>
                         </Link>
                         <button className='AddNote__submit' disabled={!this.state.formValid}>Submit</button>
                     </div>
                 </form>
             </div>
-        );
+        )
     }
 }
 
-export default withRouter(AddNote);
+export default EditNote;

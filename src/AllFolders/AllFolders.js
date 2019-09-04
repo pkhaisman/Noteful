@@ -2,11 +2,10 @@ import React from 'react';
 import Folder from '../Folder/Folder';
 import {NavLink, Link} from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
+import './AllFolders.css';
 
 class AllFolders extends React.Component {
     static contextType = NotefulContext;
-
-    
 
     render() {
         const allFolders = this.context.data.folders.map(folder => {
@@ -17,6 +16,7 @@ class AllFolders extends React.Component {
                         onClick={() => this.context.setSelectedFolder(folder.id)}
                     >
                         <Folder
+                            history={this.props.history}
                             id={folder.id}
                             name={folder.name}
                         />
@@ -31,8 +31,9 @@ class AllFolders extends React.Component {
                 </ul>
                 <Link
                     to={'/newFolder'}
+                    className='AllFolders__add-folder'
                 >
-                    <button>Add Folder</button>
+                    <button className='AllFolders__add-folder-btn'>Add Folder</button>
                 </Link>
             </div>
         );

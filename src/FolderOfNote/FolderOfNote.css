@@ -1,0 +1,22 @@
+.FolderOfNote__go-back-btn {
+    border-radius: 5px;
+    background-color: #008CBA;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+    margin-left: 10px
+}
+
+.FolderOfNote__go-back-btn:hover {
+    cursor: pointer;
+    background-color: rgb(0, 113, 151)
+}
+
+.FolderOfNote__title {
+    font-weight: bold;
+    font-size: 1.17em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

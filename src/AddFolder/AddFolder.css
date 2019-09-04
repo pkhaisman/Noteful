@@ -1,0 +1,62 @@
+.AddFolder__form {
+    width: 150px;
+    margin: 0 auto;
+}
+
+.AddFolder__buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.AddFolder__new-folder-input {
+    width: 98%;
+}
+
+.AddFolder__cancel {
+    border-radius: 5px;
+    background-color: #f44336;
+    border: none;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.AddFolder__cancel:hover {
+    background-color: #db3b2f;
+    cursor: pointer;
+}
+
+.AddFolder__cancel--color {
+    color: white;
+}
+
+.AddFolder__submit {
+    border-radius: 5px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.AddFolder__submit:hover {
+    cursor: pointer;
+    background-color: rgb(63, 148, 66);
+}
+
+button:disabled {
+    border-radius: 5px;
+    background-color: grey;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+button:disabled:hover {
+    background-color: grey
+}
+
+.error {
+    color: #db3b2f
+}

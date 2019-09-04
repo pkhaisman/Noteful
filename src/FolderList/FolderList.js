@@ -10,24 +10,21 @@ class FolderList extends React.Component {
 
     componentDidMount() {
         if (this.props.match && this.props.match.params.folderId) {
-            console.log('setting selected folder')
             this.context.setSelectedNote(null);
-            this.context.setSelectedFolder(this.props.match.params.folderId);
+            this.context.setSelectedFolder(parseInt(this.props.match.params.folderId));
         }
         if (this.props.match && this.props.match.params.noteId) {
-            const note = this.context.data.notes.find(note => note.id === this.props.match.params.noteId);
-            this.context.setSelectedFolder(note.folderId);
-            this.context.setSelectedNote(this.props.match.params.noteId)
+            const note = this.context.data.notes.find(note => parseInt(note.id) === parseInt(this.props.match.params.noteId));
+            this.context.setSelectedFolder(parseInt(note.folderId));
+            this.context.setSelectedNote(parseInt(this.props.match.params.noteId))
         }
     }
 
     render() {
-        // if a note is clicked... 
-        console.log(this.context.selectedFolder); 
         if (this.context.selectedNote) {
             return <FolderOfNote />
         } 
-        return <AllFolders />
+        return <AllFolders history={this.props.history} />
     }
 }
 

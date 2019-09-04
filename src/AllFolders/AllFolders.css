@@ -1,0 +1,18 @@
+.AllFolders__add-folder {
+    display: flex;
+    justify-content: center; 
+}
+
+.AllFolders__add-folder-btn {
+    border-radius: 5px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+.AllFolders__add-folder-btn:hover {
+    cursor: pointer;
+    background-color: rgb(63, 148, 66);
+}

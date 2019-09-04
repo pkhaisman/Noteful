@@ -3,8 +3,16 @@
     margin: 10px;
     border: 1px solid black;
     list-style-type: none;
+    padding-left: 10px;
+    display: flex;
+    justify-content: space-between
+}
+
+.folder-buttons {
+    display: flex;
+    align-self: center;
 }
 
 .selected {
-    background-color: yellow;
+    background-color: rgb(233, 233, 233);
 }

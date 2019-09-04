@@ -8,6 +8,8 @@ import AddNote from './AddNote/AddNote'
 import NotefulContext from './NotefulContext';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import './App.css';
+import EditNote from './EditNote/EditNote';
+import EditFolder from './EditFolder/EditFolder';
 
 class App extends React.Component {
     constructor(props) {
@@ -32,21 +34,50 @@ class App extends React.Component {
         })
     }
 
-    handleDelete = (noteId) => {
-        fetch(`http://localhost:9090/notes/${noteId}`, {
-            method: 'DELETE',
-            headers: {
-                'content-type': 'application/json'
-            }
+    updateState = (data) => {
+        this.setState({
+            notes: data
         })
-            .then(response => response.json())
-            .then(() => {
-                console.log('delete route');
-                this.setState({
-                    notes: this.state.notes.filter(note => note.id !== noteId),
-                    selectedNote: null
-                })
+    }
+    
+    handleDelete = (eventObj) => {
+        const eventObjId = parseInt(eventObj.id)
+        // this deletes a folder
+        if (eventObj.className.includes('Folder')) {
+            fetch(`http://localhost:8000/api/folders/${eventObjId}`, {
+                method: 'DELETE',
+                headers: {
+                    'content-type': 'application/json'
+                }
             })
+                .then(() => {
+                    this.setState({
+                        folders: this.state.folders.filter(folder => folder.id !== eventObjId),
+                        selectedFolder: null
+                    })
+                })
+        }
+        // this deletes a note
+        if (eventObj.className.includes('Note')) {
+            const note = this.state.notes.find(note => note.id === eventObjId);
+            const folderId = note.folderId;
+            fetch(`http://localhost:8000/api/notes/${folderId}/notes/${eventObj.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'content-type': 'application/json'
+                }
+            })
+                .then(() => {
+                    console.log('promise resolves')
+                    this.setState({
+                        notes: this.state.notes.filter(note => note.id !== eventObjId),
+                        selectedNote: null
+                    })
+                })
+                .catch(() => {
+                    console.log('catch error')
+                })
+        }
     }
 
     handleAddFolder = (folderName, folderId) => {
@@ -62,12 +93,13 @@ class App extends React.Component {
         });
     }
 
-    handleAddNote = (noteName, noteFolder, noteContent, noteId) => {
+    handleAddNote = (noteName, noteFolder, noteContent, noteId, modified) => {
         const newNote = {
             name: noteName,
             folderId: noteFolder,
             content: noteContent,
-            id: noteId
+            id: noteId,
+            modified: modified
         }
         this.setState({
             notes: [
@@ -77,9 +109,39 @@ class App extends React.Component {
         });
     }
 
+    handleEditFolder = (folderId, folderName) => {
+        const updatedFolder = {
+            id: folderId,
+            name: folderName
+        }
+        const filteredFoldersArr = this.state.folders.filter(folder => folder.id !== folderId)
+        this.setState({
+            folders: [
+                ...filteredFoldersArr,
+                updatedFolder,
+            ]
+        })
+    }
+
+    handleEditNote = (noteName, noteFolder, noteContent, noteId, modified) => {
+        const updatedNote = {
+            name: noteName,
+            folderId: noteFolder,
+            content: noteContent,
+            id: noteId,
+            modified: modified
+        }
+        this.setState({
+            notes: [
+                ...this.state.notes,
+                updatedNote,
+            ]
+        })
+    }
+
     componentDidMount() {
         // fetch folders
-        fetch('http://localhost:9090/folders', {
+        fetch('http://localhost:8000/api/folders', {
             method: 'GET',
             headers: {
                 'content-type': 'application/json'
@@ -87,12 +149,18 @@ class App extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
+                const reformattedData = data.map(folder => {
+                    return {
+                        id: folder.id,
+                        name: folder.folder_name
+                    }
+                })
                 this.setState({
-                    folders: data
+                    folders: reformattedData
                 })
             })
         // fetch notes
-        fetch('http://localhost:9090/notes', {
+        fetch('http://localhost:8000/api/notes/', {
             method: 'GET',
             headers: {
                 'content-type': 'application/json'
@@ -100,8 +168,17 @@ class App extends React.Component {
         })
             .then(response => response.json())
             .then(data => {
+                const reformattedData = data.map(note => {
+                    return {
+                        name: note.note_name,
+                        modified: note.date_modified,
+                        id: note.id,
+                        folderId: note.folder_id,
+                        content: note.note_content
+                    }
+                })
                 this.setState({
-                    notes: data
+                    notes: reformattedData
                 })
             })
     }
@@ -122,7 +199,10 @@ class App extends React.Component {
             setSelectedNote: this.setSelectedNote,
             handleDelete: this.handleDelete,
             handleAddFolder: this.handleAddFolder,
-            handleAddNote: this.handleAddNote
+            handleAddNote: this.handleAddNote,
+            handleEditFolder: this.handleEditFolder,
+            handleEditNote: this.handleEditNote,
+            updateState: this.updateState,
         }
         return (
             <main className='App'>
@@ -136,7 +216,7 @@ class App extends React.Component {
                         render={(props) => {
                             return <div className='main-content'>
                                 <ErrorBoundary>
-                                    <FolderList />
+                                    <FolderList history={props.history} />
                                 </ErrorBoundary>
                                 <ErrorBoundary>
                                     <NoteList />
@@ -150,7 +230,7 @@ class App extends React.Component {
                         render={(props) => {
                             return <div className='main-content'>
                                 <ErrorBoundary>
-                                    <FolderList match={props.match} />
+                                    <FolderList history={props.history} match={props.match} />
                                 </ErrorBoundary>
                                 <ErrorBoundary>
                                     <NoteList />
@@ -164,7 +244,7 @@ class App extends React.Component {
                         render={(props) => {
                             return <div className='main-content'>
                                 <ErrorBoundary>
-                                    <FolderList match={props.match} />
+                                    <FolderList history={props.history} match={props.match} />
                                 </ErrorBoundary>
                                 <ErrorBoundary>
                                     <NoteList />
@@ -180,6 +260,25 @@ class App extends React.Component {
                         path='/newNote/'
                         render={() => {
                             return <AddNote selectedFolder={this.state.selectedFolder ? this.state.selectedFolder : 'no-folder-selected'} />
+                        }}
+                    />
+                    <Route 
+                        path='/editNote/:noteId/'
+                        render={(props) => {
+                            return <EditNote 
+                                match={props.match}
+                                history={props.history}
+                                selectedNote={this.state.selectedNote ? this.state.notes.find(note => note.id === this.state.selectedNote) : 'no-note-selected'}
+                                selectedFolder={this.state.selectedFolder ? this.state.selectedFolder : 'no-folder-selected'} />
+                        }}
+                    />
+                    <Route 
+                        path='/editFolder/:folderId/'
+                        render={(props) => {
+                            return <EditFolder
+                                history={props.history}
+                                match={props.match} 
+                                selectedFolder={this.state.selectedFolder ? this.state.selectedFolder : 'no-folder-selected'} />
                         }}
                     />
                 </NotefulContext.Provider>
