@@ -10,6 +10,7 @@ import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import './App.css';
 import EditNote from './EditNote/EditNote';
 import EditFolder from './EditFolder/EditFolder';
+import config from './config';
 
 class App extends React.Component {
     constructor(props) {
