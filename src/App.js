@@ -45,7 +45,7 @@ class App extends React.Component {
         const eventObjId = parseInt(eventObj.id)
         // this deletes a folder
         if (eventObj.className.includes('Folder')) {
-            fetch(`http://localhost:8000/api/folders/${eventObjId}`, {
+            fetch(`${config.API_ENDPOINT}/api/folders/${eventObjId}`, {
                 method: 'DELETE',
                 headers: {
                     'content-type': 'application/json'
@@ -62,7 +62,7 @@ class App extends React.Component {
         if (eventObj.className.includes('Note')) {
             const note = this.state.notes.find(note => note.id === eventObjId);
             const folderId = note.folderId;
-            fetch(`http://localhost:8000/api/notes/${folderId}/notes/${eventObj.id}`, {
+            fetch(`${config.API_ENDPOINT}/api/notes/${folderId}/notes/${eventObj.id}`, {
                 method: 'DELETE',
                 headers: {
                     'content-type': 'application/json'
@@ -142,7 +142,7 @@ class App extends React.Component {
 
     componentDidMount() {
         // fetch folders
-        fetch('http://localhost:8000/api/folders', {
+        fetch(`${config.API_ENDPOINT}/api/folders`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json'
@@ -161,7 +161,7 @@ class App extends React.Component {
                 })
             })
         // fetch notes
-        fetch('http://localhost:8000/api/notes/', {
+        fetch(`${config.API_ENDPOINT}`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json'
