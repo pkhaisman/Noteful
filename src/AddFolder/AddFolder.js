@@ -3,6 +3,7 @@ import {Link, withRouter} from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
 import ValidationError from '../ValidationError'
 import './AddFolder.css';
+import config from '../config';
 
 class AddFolder extends Component {
     static contextType = NotefulContext;
@@ -39,7 +40,7 @@ class AddFolder extends Component {
         e.preventDefault();
         const folderName = this.state.newFolder;
         // make a POST request
-        fetch('http://localhost:8000/api/folders', {
+        fetch(`${config.API_ENDPOINT}/api/folders`, {
             method: 'POST',
             body: JSON.stringify({
                 folder_name: folderName

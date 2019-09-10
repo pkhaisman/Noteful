@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import NotefulContext from '../NotefulContext';
 import { Link } from 'react-router-dom';
 import ValidationError from '../ValidationError';
+import config from '../config';
 
 class EditFolder extends Component {
     static contextType = NotefulContext
@@ -64,7 +65,7 @@ class EditFolder extends Component {
 
         const { folderId, folderName, formValid } = this.state;
 
-        fetch(`http://localhost:8000/api/folders/${folderId}`, {
+        fetch(`${config.API_ENDPOINT}/api/folders/${folderId}`, {
             method: `PATCH`,
             body: JSON.stringify({
                 id: folderId,

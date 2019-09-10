@@ -3,6 +3,7 @@ import NotefulContext from '../NotefulContext';
 import { Link } from 'react-router-dom'
 import ValidationError from '../ValidationError';
 import './EditNote.css';
+import config from '../config';
 
 class EditNote extends Component {
     static contextType = NotefulContext
@@ -122,7 +123,7 @@ class EditNote extends Component {
         datePromise.then(() => {
             const { noteId, noteName, noteContent, noteFolderId, modified, formValid } = this.state;
             
-            fetch(`http://localhost:8000/api/notes/${noteFolderId}/notes/${noteId}`, {
+            fetch(`${config.API_ENDPOINT}/api/notes/${noteFolderId}/notes/${noteId}`, {
                 method: `PATCH`,
                 body: JSON.stringify({
                     note_name: noteName,

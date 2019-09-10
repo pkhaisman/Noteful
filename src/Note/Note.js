@@ -5,12 +5,13 @@ import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import DeleteButton from '../DeleteButton/DeleteButton';
 import EditButton from '../EditButton/EditButton';
+import config from '../config';
 
 class Note extends React.Component {
     static contextType = NotefulContext;
 
     componentDidMount() {
-        fetch('http://localhost:8000/api/notes/', {
+        fetch(`${config.API_ENDPOINT}/api/notes/`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json'

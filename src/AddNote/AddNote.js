@@ -3,6 +3,7 @@ import {Link, withRouter} from 'react-router-dom';
 import NotefulContext from '../NotefulContext';
 import ValidationError from '../ValidationError';
 import './AddNote.css';
+import config from '../config';
 
 class AddNote extends Component {
     static contextType = NotefulContext;
@@ -113,7 +114,7 @@ class AddNote extends Component {
         datePromise.then(() => {
             const {noteName, noteFolder, noteContent, formValid, modified} = this.state;
             
-            fetch(`http://localhost:8000/api/notes/${noteFolder}/notes`, {
+            fetch(`${config.API_ENDPOINT}/api/notes/${noteFolder}/notes`, {
                 method: 'POST',
                 body: JSON.stringify({
                     note_name: noteName,

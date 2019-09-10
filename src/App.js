@@ -161,7 +161,7 @@ class App extends React.Component {
                 })
             })
         // fetch notes
-        fetch(`${config.API_ENDPOINT}`, {
+        fetch(`${config.API_ENDPOINT}/api/notes`, {
             method: 'GET',
             headers: {
                 'content-type': 'application/json'
